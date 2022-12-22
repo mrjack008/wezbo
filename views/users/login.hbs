@@ -1,0 +1,147 @@
+<style>
+    .error{
+        color: red;
+    }
+</style>
+<div class="container" id="container">
+	<div class="form-container sign-up-container">
+		<form action="/home" method="post" id="sign">
+			<h1>Create Account</h1>
+
+			<input type="text" name="Name" placeholder="Name" required/>
+			<input type="email" name="Email" placeholder="Email" required/>
+            	<input type="text" name="phone" placeholder="Phone Number" required/>
+			<input type="password" name="password" placeholder="password" required/>
+		
+
+			<button>Sign Up</button>
+		</form>
+	</div>
+	<div class="form-container sign-in-container">
+		<form  id="login-form">
+
+			<h1>Sign in</h1>
+
+			<input type="text" placeholder="Name" name="Name" required/>
+			<input type="password" id="signinpassword" placeholder="Password" name="password" required/>
+			<a href="/forgot-password">Forgot your password?</a>
+			<button>Sign In</button>
+            
+
+				<p class="error" id="error" style="color: red;"></p>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<h1>Welcome Back!</h1>
+				<p>To keep connected with us please login with your personal info</p>
+				<button class="ghost" id="signIn">Sign In</button>
+                
+			</div>
+			<div class="overlay-panel overlay-right">
+				<h1>Hello, Friend!</h1>
+				<p>Enter your personal details and start journey with us</p>
+				<button class="ghost" id="signUp">Sign Up</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{!-- <footer>
+	<p>
+		Created with <i class="fa fa-heart"></i> by
+		<a target="_blank" href="https://florin-pop.com">Florin Pop</a>
+		- Read how I created this and how you can join the challenge
+		<a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">here</a>.
+	</p>
+</footer> --}}
+<script
+         src="https://code.jquery.com/jquery-3.6.1.js"
+         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+         crossorigin="anonymous"
+      ></script>
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
+         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+<script>
+    $(document).ready(function () {
+        jQuery.validator.addMethod("noSpace", function (value, element) {
+            return value.indexOf(" ") < 0 && value != "";
+        }, "Space are not allowed");
+        $("#sign").validate({
+            rules: {
+                Name: {
+                    required: true,
+                    noSpace: true,
+                },
+                Email: {
+                    required: true,
+                    noSpace: true
+                },
+                password: {
+                    required: true,
+                    noSpace: true
+                },
+                phone:{
+                    required: true,
+                    noSpace:true
+                }
+
+            },
+            messages: {
+                Name: {
+                    required: 'Enter the name',
+                },
+                Email: {
+                    required: "Enter the email"
+                },
+                Password: {
+                    required: "Enter the password"
+                },
+                phone:{
+                    required:"Enter the phonenumber"
+                }
+
+                
+
+            }
+        })
+    })
+</script>
+  <script>
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+      container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+      container.classList.remove("right-panel-active");
+    });
+  </script>
+  <script>
+    $('#login-form').submit((e) => {
+		e.preventDefault()
+		$.ajax({
+			url: '/home1',
+			method: 'post',
+			data: $("#login-form").serialize(),
+			success: (status) => {
+				console.log(status.status)
+				
+			if (status.status == 'success') {
+					location.href='/indexpage'
+				}
+					document.getElementById("error").innerHTML = status.status;
+					document.getElementById("signinpassword").value = "";
+				
+			}
+		})
+	})
+  </script>

@@ -1,0 +1,30 @@
+body {
+    font-family: system-ui;
+    background: #f18d1d;
+    color: white;
+  }
+  
+  nav {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    background-color: black;
+    border-radius: 10px;
+  }
+  nav,
+  ul {
+    display: flex;
+    /*   padding:1em; */
+    margin: 0px;
+    align-items: center;
+  }
+  nav,
+  li {
+    list-style-type: none;
+    margin: 1em;
+    /*   margin-left:1em; */
+    display: flex;
+    gap: 10em;
+    justify-content: space-around;
+  }
+  
