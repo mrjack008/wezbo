@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const { response } = require('../app')
 const maxAge =3*24*60*60
 const jwt =require('jsonwebtoken')
+const { resolve } = require('path')
+const { reject } = require('promise')
 const createToken=(id)=>{
     return jwt.sign({id},"mrjack",{
         expiresIn:maxAge,
@@ -122,6 +124,33 @@ module.exports={
                 resolve(users)
             })
         })
+    },
+    allusers:()=>{
+        return new Promise((resolve,reject)=>{
+            db.query(`select * from users `,(err,results)=>{
+                if(err){
+                    throw err;
+                }
+                console.log(results.rows);
+                users=results.rows
+                resolve(users)
+            })
+        })
+    },
+    deleteuser:(id)=>{
+        console.log(id);
+        return new Promise(async(resolve,reject)=>{
+          await  db.query('DELETE FROM "users" WHERE "id" = $1', [id],(err,results)=>{
+            if(err){
+                throw err;
+            }
+            console.log(results);
+          });
+          resolve("done")
+        })
+
+        
     }
+    
 
 }

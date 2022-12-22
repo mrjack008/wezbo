@@ -1,0 +1,15 @@
+	
+	<div class="adminlogin">
+		<form  action="" method="post">
+			<h1>Admin Login</h1>			
+            <input name="adminname" type="text" placeholder="user" required/>
+			<input name="adminpass" type="password" placeholder="Password" required/>
+			<a href="#">Forgot your password?</a>
+			<button>Sign In</button>
+			{{#if error}}
+				<p style="color:red ;">{{error}}</p>
+
+			{{/if}}
+		</form>
+	</div>
+	

@@ -3,7 +3,7 @@ const userHelpers = require('../helpers/user-helpers');
 const maxAge =3*24*60*60
 const jwt =require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-
+var error
 const createToken=(id)=>{
     return jwt.sign({id},"mrjack",{
         expiresIn:maxAge,
@@ -69,9 +69,9 @@ userSignup:async function(req,res){
     const token =req.cookies.jwt
     if(token){
         jwt.verify(token,"mrjack",async(err,decodedToken)=>{
-            if(err){
-                res.json({status:false})
-                next()
+            if(err||decodedToken.id=='admin'){
+                res.redirect('/clear')
+            
             }else{
                 console.log(decodedToken.id);
                 const user=await userHelpers.findById(decodedToken.id)
@@ -146,7 +146,7 @@ reset:(req,res)=>{
 },
 reseted:(req,res)=>{
     const{id,token}=req.params;
-    const {pass,password}=req.body
+    const {pass}=req.body
     userHelpers.findById(id).then(async(response)=>{
         if(response){
             const secret=JWT_SECRET+response.password
@@ -167,6 +167,49 @@ reseted:(req,res)=>{
         else{
             res.send("invalid id")
         }
+    })
+},
+admin:(req,res)=>{
+    res.render('admin/adminlogin',{error})
+},
+admincheck:(req,res)=>{
+    console.log(req.body);
+    const {email,password}=req.body;
+    console.log(email,password);
+    if(req.body.adminname==='admin@mail.com'&&req.body.adminpass==='pass'){ 
+        console.log("haiiii");
+        const token=createToken("admin");  
+        res.cookie("jwt",token,{ 
+            withCredintials:true, 
+            httpOnly:false, 
+            maxAge:maxAge*1000,
+        })
+       res.redirect('/admin/index')
+
+
+    } 
+   
+        else{
+            error="invalid username and password"
+            res.redirect('/admin')
+            setTimeout(() => {
+              error=""
+            }, 2000);
+        
+          }
+   
+},
+adminindex:async(req,res)=>{
+    
+    await userHelpers.allusers().then((response)=>{
+        console.log(response);
+        res.render('admin/adminusers',{layout:'layout3',users:response})
+    })
+},
+deleteUsers:(req,res)=>{
+    let userid = req.params.id
+    userHelpers.deleteuser(userid).then((response)=>{
+        res.send(response)
     })
 }
   
