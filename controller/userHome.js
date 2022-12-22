@@ -223,10 +223,32 @@ admincheck:(req,res)=>{
 },
 adminindex:async(req,res)=>{
     
-    await userHelpers.allusers().then((response)=>{
-        console.log(response);
-        res.render('admin/adminusers',{layout:'layout3',users:response})
-    })
+    const token =req.cookies.jwt
+    if(token){ 
+        jwt.verify(token,"mrjack",async(err,decodedToken)=>{
+            if(err){
+                res.json({status:false})
+                next()
+            }else{
+                console.log(decodedToken);
+                // const user=await User.findById(decodedToken.id)
+                if(decodedToken.id=='admin') {
+                    await userHelpers.allusers().then((response)=>{
+                        console.log(response);
+                        res.render('admin/adminusers',{layout:'layout3',users:response})
+                    })
+                }
+                else {
+                    res.redirect('/admin')
+                }
+                
+            }
+        }) 
+    }else{
+        res.redirect('/admin')
+    
+    }
+ 
 },
 deleteUsers:(req,res)=>{
     let userid = req.params.id
