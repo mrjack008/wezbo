@@ -3,6 +3,14 @@ const userHelpers = require('../helpers/user-helpers');
 const maxAge =3*24*60*60
 const jwt =require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service:'gmail',
+    auth: {
+      user: 'favasmohd11@gmail.com',
+      pass: 'razal123'
+    }
+  });
 var error
 const createToken=(id)=>{
     return jwt.sign({id},"mrjack",{
@@ -114,7 +122,21 @@ forgot:(req,res)=>{
             }
             const token=jwt.sign(payload,secret,{expiresIn:'15m'})
             const link = `http://localhost:3000/reset-password/${response.id}/${token}`
+
             console.log(link);
+            var mailOptions = {
+                from: 'favasmohd11@gmail.com',
+                to: 'razalpa6@gmail.com',
+                subject: 'Sending Email using Node.js',
+                text: 'That was easy!'
+              };
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                }
+              });
             res.send("password reset link has been sent  to your email")
         }
         else{
